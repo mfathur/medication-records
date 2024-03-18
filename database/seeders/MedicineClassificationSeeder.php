@@ -14,7 +14,7 @@ class MedicineClassificationsSeeder extends Seeder
      */
     public function run()
     {
-        // Data untuk dimasukkan ke dalam tabel
+        // data to be stored in the table
         $classifications = [
             ['classification_name' => 'Analgesik', 'classification_description' => 'Obat pereda nyeri'],
             ['classification_name' => 'Antibiotik', 'classification_description' => 'Obat untuk mengobati infeksi bakteri'],
@@ -28,7 +28,7 @@ class MedicineClassificationsSeeder extends Seeder
             ['classification_name' => 'Antikolinergik', 'classification_description' => 'Obat untuk menghambat aktivitas neurotransmiter asetilkolin dalam sistem saraf parasimpatis'],
         ];
 
-        // Masukkan data ke dalam database menggunakan Eloquent
+        // insert data to table
         foreach ($classifications as $classification) {
             MedicineClassification::create($classification);
         }
