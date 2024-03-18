@@ -12,6 +12,7 @@ class MedicController extends Controller
 {
     public function index()
     {
+        // fetch all medicines data
         $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
             ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
             ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
@@ -24,26 +25,30 @@ class MedicController extends Controller
 
     public function create()
     {
+        // fetch medicine classifications, used for dropdown input value 
         $medicineClassifications = MedicineClassification::all();
         return view('medicine.create', compact('medicineClassifications'));
     }
 
     public function update($id)
     {
+        // fetch a medicine detail by its id 
         $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
             ->selectRaw('CONCAT("[",GROUP_CONCAT(medicine_classifications.id),"]") AS classification_ids')
             ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
             ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
-            ->where('medicines.id', $id)
+            ->where('medicines.id', $id) // by id
             ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
             ->get();
 
+        // fetch medicine classifications, used for dropdown input value 
         $medicineClassifications = MedicineClassification::all();
         return view('medicine.update', ['medicineClassifications' => $medicineClassifications, 'medicine' => $medicines[0]]);
     }
 
     public function detail($id)
     {
+        // fetch a medicine detail by its id 
         $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
             ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
             ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
@@ -59,7 +64,7 @@ class MedicController extends Controller
     {
         $medic = Medicine::find($id);
         if ($medic) {
-            $medic->delete();
+            $medic->delete(); // delete the data if exists
         }
 
         return redirect()->route('medicine.dashboard');
@@ -95,9 +100,10 @@ class MedicController extends Controller
             'updated_at' => $timestampNow
         ]);
 
+        // delete all previous medicine classifications 
         MedicineClassificationMapping::where('medicine_id', '=', $id)->delete();
 
-        // insert medic classifications
+        // insert new medicine classifications
         $medicClasses = [];
         foreach ($request->classification_ids as $medicClassId) {
             $data = [
