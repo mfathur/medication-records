@@ -10,6 +10,18 @@ use Illuminate\Http\Request;
 
 class MedicController extends Controller
 {
+    public function index()
+    {
+        $medicines = Medicine::select('medicines.name', 'medicines.medicine_types', 'medicines.stock')
+            ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
+            ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
+            ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
+            ->groupBy('medicines.name', 'medicines.medicine_types', 'medicines.stock')
+            ->get();
+
+        return view('medicine.dashboard', compact('medicines'));
+    }
+
     public function create()
     {
         $medicineClassifications = MedicineClassification::all();
@@ -73,6 +85,6 @@ class MedicController extends Controller
         }
         MedicineClassificationMapping::insert($medicClasses);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('medicine.dashboard');
     }
 }

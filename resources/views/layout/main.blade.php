@@ -31,7 +31,8 @@
                 <ul class="menu p-4 w-64 font-medium">
                     <!-- Sidebar content here -->
                     <li>
-                        <div><i class="fa-solid fa-pills"></i> <a href="{{ route('dashboard') }}">Daftar Obat</a></div>
+                        <div><i class="fa-solid fa-pills"></i> <a href="{{ route('medicine.dashboard') }}">Daftar
+                                Obat</a></div>
                     </li>
 
                     <li class="mt-4">

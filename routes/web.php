@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MedicController;
 
 /*
@@ -25,7 +24,7 @@ Route::post('/postRegister', [AuthController::class, 'postRegister'])->name('pos
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/', [MedicController::class, 'index'])->name('medicine.dashboard');
 
     Route::get('/medics/create', [MedicController::class, 'create'])->name('medicine.create');
     Route::post('/medics/postMedic', [MedicController::class, 'postMedic'])->name('medicine.postMedic');
