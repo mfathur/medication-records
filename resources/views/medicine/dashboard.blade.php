@@ -7,8 +7,8 @@
             <a class="self-end" href="{{ route('medicine.create') }}">
                 <button class="btn btn-primary "><i class="fa-solid fa-plus"></i> Tambah Obat</button>
             </a>
-            <div class="overflow-x-auto overflow-y-visible">
-                <table class="table table-zebra ">
+            <div class="overflow-x-auto h-screen">
+                <table class="table table-zebra">
                     <!-- head -->
                     <thead>
                         <tr>
@@ -70,6 +70,23 @@
                                     </div>
                                 </td>
                             </tr>
+                            {{-- @php
+                                $modalName = 'modal' . $loop->iteration;
+                            @endphp
+                            <button class="btn" onclick="openModal($modalName)">open
+                                modal</button>
+                            <dialog id="{{ $modalName }}" class="modal modal-bottom sm:modal-middle">
+                                <div class="modal-box">
+                                    <h3 class="font-bold text-lg">Hello!</h3>
+                                    <p class="py-4">Press ESC key or click the button below to close</p>
+                                    <div class="modal-action">
+                                        <form method="dialog">
+                                            <!-- if there is a button in form, it will close the modal -->
+                                            <button class="btn">Close</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </dialog> --}}
                         @endforeach
                     </tbody>
                 </table>
