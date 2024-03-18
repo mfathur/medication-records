@@ -26,5 +26,7 @@ DB_PASSWORD=password
 ```
 
 3. Import the sql dump file to the mysql database in your local computer.
-4. Run the app by typing command `php artisan serve` in the terminal.
-5. That's it! The app is already running. You can access it with your local browser by visiting http://localhost:8000.
+4. Install app dependencies by typing command `composer install` and `npm install` in the terminal.
+5. Run command `npm run dev` in the terminal.
+6. Run the app by typing command `php artisan serve` in the terminal.
+7. That's it! The app is already running. You can access it with your local browser by visiting http://localhost:8000.
