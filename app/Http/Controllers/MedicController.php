@@ -67,7 +67,7 @@ class MedicController extends Controller
             $medic->delete(); // delete the data if exists
         }
 
-        return redirect()->route('medicine.dashboard');
+        return redirect()->route('medicine.dashboard')->with('success', "Hapus data berhasil");
     }
 
     public function putMedic(Request $request, $id)
@@ -117,7 +117,7 @@ class MedicController extends Controller
         }
         MedicineClassificationMapping::insert($medicClasses);
 
-        return redirect()->route('medicine.dashboard');
+        return redirect()->route('medicine.dashboard')->with('success', 'Ubah data berhasil');
     }
 
     public function postMedic(Request $request)
@@ -168,6 +168,6 @@ class MedicController extends Controller
         }
         MedicineClassificationMapping::insert($medicClasses);
 
-        return redirect()->route('medicine.dashboard');
+        return redirect()->route('medicine.dashboard')->with('success', 'Tambah data berhasil');
     }
 }
