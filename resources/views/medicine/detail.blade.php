@@ -4,7 +4,9 @@
         <div class="flex gap-x-4 items-center">
             <h1 class="text-2xl font-bold">Detail Obat</h1>
             <form action="{{ route('medicine.update', ['id' => $medicine->id]) }}">
-                <button type="submit"><i class="fa-solid fa-pen text-gray-400 hover:text-primary"></i></button>
+                <div class="tooltip tooltip-bottom" data-tip="Edit">
+                    <button type="submit"><i class="fa-solid fa-pen text-gray-400 hover:text-primary"></i></button>
+                </div>
             </form>
         </div>
         <hr class="my-4">

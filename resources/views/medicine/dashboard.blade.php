@@ -29,17 +29,17 @@
                                 <td>{{ $medic->name }}</td>
                                 <td>
                                     @if ($medic->medicine_types == 'hijau')
-                                        Bebas
+                                        Obat Bebas
                                     @elseif($medic->medicine_types == 'palang_medali_merah')
                                         Narkotika
                                     @elseif($medic->medicine_types == 'biru')
-                                        Bebas terbatas
+                                        Obat Bebas terbatas
                                     @elseif($medic->medicine_types == 'tiga_bintang')
                                         Herbal terstandar
                                     @elseif($medic->medicine_types == 'pohon_hijau')
                                         Jamu
                                     @elseif($medic->medicine_types == 'simbol_k')
-                                        Keras
+                                        Obat Keras
                                     @elseif($medic->medicine_types == 'salju')
                                         Fitofarmaka
                                     @endif
