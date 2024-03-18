@@ -48,8 +48,14 @@
                                 <td>{{ $medic->stock }}</td>
                                 <td>
                                     <div class="flex flex-nowrap">
-                                        <i class="fa-solid fa-trash"></i>
-                                        <i class="fa-solid fa-ellipsis ml-4"></i>
+                                        <button class="hover:text-primary"><i class="fa-solid fa-trash"></i></button>
+                                        <form
+                                            action="{{ route('medicine.detail', ['id' => $medic->id, 'medic' => $medic]) }}"
+                                            method="GET">
+                                            @csrf
+                                            <button class="hover:text-primary"><i
+                                                    class="fa-solid fa-ellipsis ml-4"></i></button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>

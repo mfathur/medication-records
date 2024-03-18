@@ -12,11 +12,11 @@ class MedicController extends Controller
 {
     public function index()
     {
-        $medicines = Medicine::select('medicines.name', 'medicines.medicine_types', 'medicines.stock')
+        $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
             ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
             ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
             ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
-            ->groupBy('medicines.name', 'medicines.medicine_types', 'medicines.stock')
+            ->groupBy('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
             ->get();
 
         return view('medicine.dashboard', compact('medicines'));
@@ -31,6 +31,35 @@ class MedicController extends Controller
     public function update()
     {
         return view('medicine.update');
+    }
+
+    public function detail($id)
+    {
+        $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+            ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
+            ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
+            ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
+            ->where('medicines.id', $id)
+            ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+            ->get();
+
+        return view('medicine.detail', ['medicine' => $medicines[0]]);
+    }
+
+    public function deleteMedic($id)
+    {
+        // TODO 
+        // $medicClassMappings = MedicineClassificationMapping::where('medicine_id', $id);
+        // if ($medicClassMappings) {
+        //     $medicClassMappings->delete();
+        // }
+
+        $medic = Medicine::find($id);
+        if ($medic) {
+            $medic->delete();
+        }
+
+        return redirect()->route('medicine.dashboard');
     }
 
     public function putMedic()
