@@ -42,7 +42,7 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($data)) {
-            return redirect()->route('dashboard');
+            return redirect()->route('medicine.dashboard');
         } else {
             return redirect()->route('login')->with('failed', 'Email atau Password salah');
         }
@@ -76,7 +76,7 @@ class AuthController extends Controller
         ];
 
         if (Auth::attempt($loginData)) {
-            return redirect()->route('dashboard');
+            return redirect()->route('medicine.dashboard');
         } else {
             return redirect()->route('login')->with('failed', 'Email atau Password salah')->withInput(['name']);
         }
