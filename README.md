@@ -9,7 +9,7 @@ Web application for recording medications in a health agency.
 -   (optional) Docker to create MySQL database in container
 -   TailwindCSS + DaisyUI for styling
 
-Download the SQL dump file [here](...).
+Download the SQL dump file [here](https://drive.google.com/file/d/1tEr_Z0_YrDaBG7EABV_9wZb0stcZlPOW/view?usp=sharing).
 
 ### How to run
 
