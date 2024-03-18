@@ -25,12 +25,14 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [MedicController::class, 'index'])->name('medicine.dashboard');
-    Route::get('/medics/{id}', [MedicController::class, 'detail'])->name('medicine.detail');
 
     Route::get('/medics/create', [MedicController::class, 'create'])->name('medicine.create');
     Route::post('/medics/postMedic', [MedicController::class, 'postMedic'])->name('medicine.postMedic');
-    // Route::delete('/medics/deleteMedic', [MedicController::class, 'deleteMedic'])->name('medicine.deleteMedic');
-    // Route::get('/medics/{id}', [MedicController::class, 'update'])->name('medicine.detail'); TODO
-    // Route::get('/medics/{id}/update', [MedicController::class, 'update'])->name('medicine.update'); TODO
 
+    Route::get('/medics/{id}', [MedicController::class, 'detail'])->name('medicine.detail');
+
+    Route::get('/medics/{id}/update', [MedicController::class, 'update'])->name('medicine.update');
+    Route::put('/medics/{id}/putMedic', [MedicController::class, 'putMedic'])->name('medicine.putMedic');
+
+    Route::delete('/medics/{id}/deleteMedic', [MedicController::class, 'deleteMedic'])->name('medicine.deleteMedic');
 });

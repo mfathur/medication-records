@@ -48,7 +48,14 @@
                                 <td>{{ $medic->stock }}</td>
                                 <td>
                                     <div class="flex flex-nowrap">
-                                        <button class="hover:text-primary"><i class="fa-solid fa-trash"></i></button>
+                                        <form action="{{ route('medicine.deleteMedic', ['id' => $medic->id]) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="hover:text-primary"><i
+                                                    class="fa-solid fa-trash"></i></button>
+                                        </form>
+
                                         <form
                                             action="{{ route('medicine.detail', ['id' => $medic->id, 'medic' => $medic]) }}"
                                             method="GET">

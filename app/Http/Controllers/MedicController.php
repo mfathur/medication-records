@@ -28,9 +28,18 @@ class MedicController extends Controller
         return view('medicine.create', compact('medicineClassifications'));
     }
 
-    public function update()
+    public function update($id)
     {
-        return view('medicine.update');
+        $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+            ->selectRaw('CONCAT("[",GROUP_CONCAT(medicine_classifications.id),"]") AS classification_ids')
+            ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
+            ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
+            ->where('medicines.id', $id)
+            ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+            ->get();
+
+        $medicineClassifications = MedicineClassification::all();
+        return view('medicine.update', ['medicineClassifications' => $medicineClassifications, 'medicine' => $medicines[0]]);
     }
 
     public function detail($id)
@@ -48,12 +57,6 @@ class MedicController extends Controller
 
     public function deleteMedic($id)
     {
-        // TODO 
-        // $medicClassMappings = MedicineClassificationMapping::where('medicine_id', $id);
-        // if ($medicClassMappings) {
-        //     $medicClassMappings->delete();
-        // }
-
         $medic = Medicine::find($id);
         if ($medic) {
             $medic->delete();
@@ -62,9 +65,53 @@ class MedicController extends Controller
         return redirect()->route('medicine.dashboard');
     }
 
-    public function putMedic()
+    public function putMedic(Request $request, $id)
     {
-        // implement update medicine
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+            'manufacturer' => 'required',
+            'stock' => 'required',
+            'type' => 'required',
+            'classification_ids' => 'required|array|min:1'
+        ], [
+            'name.required' => 'Nama tidak boleh kosong',
+            'description.required' => 'Deskripsi tidak boleh kosong',
+            'manufacturer.required' => 'Nama instansi pembuat obat tidak boleh kosong',
+            'stock.required' => 'Stok tidak boleh kosong',
+            'type.required' => 'Golongan obat tidak boleh kosong',
+            'classification_ids.required' => 'Obat minimal tergolong dalam 1 klasifikasi',
+        ]);
+
+        $timestampNow = Carbon::now();
+
+        $medic = Medicine::findOrFail($id);
+        $medic->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'manufacturer' => $request->manufacturer,
+            'medicine_types' => $request->type,
+            'stock' => $request->stock,
+            'updated_at' => $timestampNow
+        ]);
+
+        MedicineClassificationMapping::where('medicine_id', '=', $id)->delete();
+
+        // insert medic classifications
+        $medicClasses = [];
+        foreach ($request->classification_ids as $medicClassId) {
+            $data = [
+                'medicine_id' => $id,
+                'classification_id' => $medicClassId,
+                'created_at' => $timestampNow,
+                'updated_at' => $timestampNow
+            ];
+
+            array_push($medicClasses, $data);
+        }
+        MedicineClassificationMapping::insert($medicClasses);
+
+        return redirect()->route('medicine.dashboard');
     }
 
     public function postMedic(Request $request)
@@ -96,6 +143,7 @@ class MedicController extends Controller
             'created_at' => $timestampNow,
             'updated_at' => $timestampNow
         ];
+
         // insert to medicine table
         $medic = Medicine::create($medicData);
         $medicId = $medic->id;

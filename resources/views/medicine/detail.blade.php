@@ -3,7 +3,9 @@
     <main class="px-4 md:px-10 py-6">
         <div class="flex gap-x-4 items-center">
             <h1 class="text-2xl font-bold">Detail Obat</h1>
-            <i class="fa-solid fa-pen text-gray-400 hover:text-primary"></i>
+            <form action="{{ route('medicine.update', ['id' => $medicine->id]) }}">
+                <button type="submit"><i class="fa-solid fa-pen text-gray-400 hover:text-primary"></i></button>
+            </form>
         </div>
         <hr class="my-4">
         <div class="flex flex-col md:p-10 gap-y-6">
