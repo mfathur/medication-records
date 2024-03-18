@@ -75,11 +75,19 @@
                 </table>
             </div>
         </div>
-        {{-- Toast --}}
+        {{-- Toast for success message --}}
         @if (Session::has('success'))
             <div class="toast toast-top toast-center">
                 <div class="alert alert-success text-primary-content bg-primary">
                     <span>{{ Session::get('success') }}</span>
+                </div>
+            </div>
+        @endif
+        {{-- Toast for error message --}}
+        @if (Session::has('error'))
+            <div class="toast toast-top toast-center">
+                <div class="alert alert-error text-white">
+                    <span>{{ Session::get('error') }}</span>
                 </div>
             </div>
         @endif

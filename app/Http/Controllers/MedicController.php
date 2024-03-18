@@ -12,62 +12,81 @@ class MedicController extends Controller
 {
     public function index()
     {
-        // fetch all medicines data
-        $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
-            ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
-            ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
-            ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
-            ->groupBy('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
-            ->get();
+        try {
+            // retrieve all medicines data
+            $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
+                ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
+                ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
+                ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
+                ->groupBy('medicines.id', 'medicines.name', 'medicines.medicine_types', 'medicines.stock')
+                ->get();
 
-        return view('medicine.dashboard', compact('medicines'));
+            return view('medicine.dashboard', compact('medicines'));
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
+        }
     }
 
     public function create()
     {
-        // fetch medicine classifications, used for dropdown input value 
-        $medicineClassifications = MedicineClassification::all();
-        return view('medicine.create', compact('medicineClassifications'));
+        try {
+            // retrieve medicine classifications, used for dropdown input value 
+            $medicineClassifications = MedicineClassification::all();
+            return view('medicine.create', compact('medicineClassifications'));
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
+        }
     }
 
     public function update($id)
     {
-        // fetch a medicine detail by its id 
-        $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
-            ->selectRaw('CONCAT("[",GROUP_CONCAT(medicine_classifications.id),"]") AS classification_ids')
-            ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
-            ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
-            ->where('medicines.id', $id) // by id
-            ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
-            ->get();
+        try {
+            // retrieve a medicine detail by its id 
+            $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+                ->selectRaw('CONCAT("[",GROUP_CONCAT(medicine_classifications.id),"]") AS classification_ids')
+                ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
+                ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
+                ->where('medicines.id', $id) // by id
+                ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+                ->get();
 
-        // fetch medicine classifications, used for dropdown input value 
-        $medicineClassifications = MedicineClassification::all();
-        return view('medicine.update', ['medicineClassifications' => $medicineClassifications, 'medicine' => $medicines[0]]);
+            // fetch medicine classifications, used for dropdown input value 
+            $medicineClassifications = MedicineClassification::all();
+            return view('medicine.update', ['medicineClassifications' => $medicineClassifications, 'medicine' => $medicines[0]]);
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
+        }
     }
 
     public function detail($id)
     {
-        // fetch a medicine detail by its id 
-        $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
-            ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
-            ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
-            ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
-            ->where('medicines.id', $id)
-            ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
-            ->get();
+        try {
+            // fetch a medicine detail by its id 
+            $medicines = Medicine::select('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+                ->selectRaw('GROUP_CONCAT(medicine_classifications.classification_name) AS classification_names')
+                ->join('medicine_classification_mapping', 'medicines.id', '=', 'medicine_classification_mapping.medicine_id')
+                ->join('medicine_classifications', 'medicine_classification_mapping.classification_id', '=', 'medicine_classifications.id')
+                ->where('medicines.id', $id)
+                ->groupBy('medicines.id', 'medicines.name', 'medicines.description', 'medicines.manufacturer', 'medicines.medicine_types', 'medicines.stock')
+                ->get();
 
-        return view('medicine.detail', ['medicine' => $medicines[0]]);
+            return view('medicine.detail', ['medicine' => $medicines[0]]);
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
+        }
     }
 
     public function deleteMedic($id)
     {
-        $medic = Medicine::find($id);
-        if ($medic) {
-            $medic->delete(); // delete the data if exists
+        try {
+            $medic = Medicine::find($id);
+            if ($medic) {
+                $medic->delete(); // delete the data if exists
+            }
+            return redirect()->route('medicine.dashboard')->with('success', "Hapus data berhasil");
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
         }
-
-        return redirect()->route('medicine.dashboard')->with('success', "Hapus data berhasil");
     }
 
     public function putMedic(Request $request, $id)
@@ -90,34 +109,38 @@ class MedicController extends Controller
 
         $timestampNow = Carbon::now();
 
-        $medic = Medicine::findOrFail($id);
-        $medic->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'manufacturer' => $request->manufacturer,
-            'medicine_types' => $request->type,
-            'stock' => $request->stock,
-            'updated_at' => $timestampNow
-        ]);
-
-        // delete all previous medicine classifications 
-        MedicineClassificationMapping::where('medicine_id', '=', $id)->delete();
-
-        // insert new medicine classifications
-        $medicClasses = [];
-        foreach ($request->classification_ids as $medicClassId) {
-            $data = [
-                'medicine_id' => $id,
-                'classification_id' => $medicClassId,
-                'created_at' => $timestampNow,
+        try {
+            $medic = Medicine::findOrFail($id);
+            $medic->update([
+                'name' => $request->name,
+                'description' => $request->description,
+                'manufacturer' => $request->manufacturer,
+                'medicine_types' => $request->type,
+                'stock' => $request->stock,
                 'updated_at' => $timestampNow
-            ];
+            ]);
 
-            array_push($medicClasses, $data);
+            // delete all previous medicine classifications 
+            MedicineClassificationMapping::where('medicine_id', '=', $id)->delete();
+
+            // insert new medicine classifications
+            $medicClasses = [];
+            foreach ($request->classification_ids as $medicClassId) {
+                $data = [
+                    'medicine_id' => $id,
+                    'classification_id' => $medicClassId,
+                    'created_at' => $timestampNow,
+                    'updated_at' => $timestampNow
+                ];
+
+                array_push($medicClasses, $data);
+            }
+            MedicineClassificationMapping::insert($medicClasses);
+
+            return redirect()->route('medicine.dashboard')->with('success', 'Ubah data berhasil');
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
         }
-        MedicineClassificationMapping::insert($medicClasses);
-
-        return redirect()->route('medicine.dashboard')->with('success', 'Ubah data berhasil');
     }
 
     public function postMedic(Request $request)
@@ -150,24 +173,28 @@ class MedicController extends Controller
             'updated_at' => $timestampNow
         ];
 
-        // insert to medicine table
-        $medic = Medicine::create($medicData);
-        $medicId = $medic->id;
+        try {
+            // insert to medicine table
+            $medic = Medicine::create($medicData);
+            $medicId = $medic->id;
 
-        // insert medic classifications
-        $medicClasses = [];
-        foreach ($request->classification_ids as $medicClassId) {
-            $data = [
-                'medicine_id' => $medicId,
-                'classification_id' => $medicClassId,
-                'created_at' => $timestampNow,
-                'updated_at' => $timestampNow
-            ];
+            // insert medic classifications
+            $medicClasses = [];
+            foreach ($request->classification_ids as $medicClassId) {
+                $data = [
+                    'medicine_id' => $medicId,
+                    'classification_id' => $medicClassId,
+                    'created_at' => $timestampNow,
+                    'updated_at' => $timestampNow
+                ];
 
-            array_push($medicClasses, $data);
+                array_push($medicClasses, $data);
+            }
+            MedicineClassificationMapping::insert($medicClasses);
+
+            return redirect()->route('medicine.dashboard')->with('success', 'Tambah data berhasil');
+        } catch (\Exception $e) {
+            return redirect()->route('medicine.dashboard')->withError($e->getMessage());
         }
-        MedicineClassificationMapping::insert($medicClasses);
-
-        return redirect()->route('medicine.dashboard')->with('success', 'Tambah data berhasil');
     }
 }
