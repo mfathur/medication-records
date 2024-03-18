@@ -7,30 +7,30 @@
             @csrf
             <div class="flex gap-x-4">
                 <div class="w-full">
-                    <input name="name" type="text" placeholder="Nama" class="input input-bordered w-full" />
+                    <input name="name" type="text" placeholder="Nama" class="input input-bordered w-full"
+                        value="{{ old('name') }}" />
                     @error('name')
                         <small class="mt-1 ml-2 text-red-600">{{ $message }}</small>
                     @enderror
                 </div>
                 <div class="w-full">
                     <input name="manufacturer" type="text" placeholder="Instansi pembuat"
-                        class="input input-bordered w-full" />
+                        class="input input-bordered w-full" value="{{ old('manufacturer') }}" />
                     @error('manufacturer')
                         <small class="mt-1 ml-2 text-red-600">{{ $message }}</small>
                     @enderror
                 </div>
-
-
             </div>
             <div>
-                <textarea name="description" class="textarea textarea-bordered text-base w-full" placeholder="Deskripsi"></textarea>
+                <textarea name="description" class="textarea textarea-bordered text-base w-full" placeholder="Deskripsi">{{ old('description') }}</textarea>
                 @error('description')
                     <small class="mt-1 ml-2 text-red-600">{{ $message }}</small>
                 @enderror
             </div>
             <div class="flex gap-x-4">
                 <div>
-                    <input name="stock" type="number" placeholder="Stok" class="input input-bordered w-24" />
+                    <input name="stock" type="number" placeholder="Stok" class="input input-bordered w-24"
+                        value="{{ old('stock') }}" />
                     @error('stock')
                         <br>
                         <small class="mt-1 text-red-600">{{ $message }}</small>
